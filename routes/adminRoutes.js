@@ -5,6 +5,7 @@ const adminRoute=express.Router()
 
 adminRoute.post('/adminLogin', adminController.adminLogin);
 adminRoute.post('/addProduct', adminController.addProduct);
+adminRoute.get('/productData', adminController.fectingProductData);
 
 
 

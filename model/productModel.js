@@ -6,11 +6,7 @@ const productSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    category: {
-        type: String,
-        required: true,
-        trim: true
-    },
+   
     price: {
         type: Number,
         required: true,
@@ -47,9 +43,12 @@ const productSchema = new mongoose.Schema({
     },
     suitableFor: {
         type: String,
-        enum: ['Bedroom', 'Office', 'Storeroom', 'Bathroom'], // Example values
         required: true,
         trim: true
+    },
+    images: {
+        type: [String], // Array of image URLs
+        required: true // Ensure at least one image is provided
     },
     createdAt: {
         type: Date,
