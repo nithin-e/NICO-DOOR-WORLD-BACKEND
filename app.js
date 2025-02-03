@@ -4,11 +4,29 @@ const dotenv = require('dotenv');
 const MongoDB = require('./connection/mongodb');
 const bodyParser = require("body-parser");
 const adminRoute = require('./routes/adminRoutes');
+const nocache = require('nocache');
+const session = require('express-session');
+const { v4: uuidv4 } = require('uuid');
+
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+
+
+app.use(nocache());
+app.use(
+  session({
+    secret: uuidv4(),
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: 30 * 24 * 60 * 60 * 1000 
+    }
+  })
+);
 
 // Connect to MongoDB
 MongoDB();

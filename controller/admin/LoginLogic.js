@@ -35,48 +35,49 @@ module.exports = {
         }
     },
 
-    addProduct:async(req,res)=>{
+    addProduct: async (req, res) => {
         try {
-            
-            console.log('chech the req body',req.body);
-            
-
-     const { name, brand, material,images, color, price,lockIncluded, stock, description,suitableFor } = req.body;
-     
-            
-
-            
-
-       
-       const newProduct = {
-        name,
-        brand,
-        suitableFor,
-        material,
-        lockIncluded,
-        color,
-        price,
-        stock,
-        description,
-        images
-      };
-
-      const product = await productDb.create(newProduct);
-            
-      res.status(200).json({
-        message: 'succesFully product Stored'
-    });
+          const { name, brand, material, color, price, lockIncluded, stock, description, suitableFor, images } = req.body;
+      
+          // Validate required fields
+          if (!images || images.length === 0) {
+            return res.status(400).json({ message: 'Images are required' });
+          }
+      
+          const newProduct = {
+            name,
+            brand,
+            material,
+            color,
+            price,
+            lockIncluded,
+            stock,
+            description,
+            suitableFor,
+            images  // This will now be an array of Cloudinary URLs
+          };
+      
+          const product = await productDb.create(newProduct);
+      
+          res.status(200).json({
+            message: 'Product successfully stored',
+            product
+          });
+      
         } catch (error) {
-            console.log(error);
-            
+          console.log(error);
+          res.status(500).json({ message: 'Internal server error. Try again later.' });
         }
-    },
+      },
+      
+
+
 
     fectingProductData:async(req,res)=>{
         try {
             
             const dataFected=await productDb.find()
-            console.log('check eda check',dataFected);
+            // console.log('check eda check',dataFected);
             
             res.status(200).json({
                 data:dataFected,
@@ -88,5 +89,18 @@ module.exports = {
             console.log(error);
             
         }
+    },
+
+    deletingProduct:async(req,res)=>{
+        try {
+            const { productId } = req.body; 
+        
+            
+            await productDb.findByIdAndDelete(productId);
+        
+            res.status(200).json({success:true, message: 'Product deleted successfully' });
+          } catch (error) {
+            res.status(500).json({ error: 'Failed to delete product' });
+          }
     }
 };
