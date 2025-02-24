@@ -1,6 +1,6 @@
 const generateToken = require("../../generateTocken/JWTfunction");
 const productDb=require ('../../model/productModel')
-
+const jwt = require("jsonwebtoken");
 
 
 
@@ -18,6 +18,9 @@ module.exports = {
         if (email === adminCredential.email && password === adminCredential.password) {
 
           const token =  generateToken(email); 
+
+
+          
         
             // Set HTTP-Only Cookie
             res.cookie("admin_jwt", token, {
@@ -42,12 +45,7 @@ module.exports = {
 
     addProduct: async (req, res) => {
         try {
-          if (!req.admin) {
-            return res.status(403).json({
-              success:false,
-              message:"Sorry, Unautorized user please try again."
-            }); 
-        }
+         
 
           const { name, brand, material, color, price, lockIncluded, stock, description, suitableFor, images } = req.body;
       
@@ -89,13 +87,7 @@ module.exports = {
         try {
 
 
-          if (!req.admin) {
-            return res.status(403).json({
-              success:false,
-              message:"Sorry, Unautorized user please try again."
-            }); 
-        }
-
+      
             const dataFected=await productDb.find()
                 // console.log('check eda check',dataFected)
               
@@ -115,12 +107,7 @@ module.exports = {
     deletingProduct:async(req,res)=>{
         try {
           console.log(req.admin,"checking if req.admin is there in delete controller")
-          if (!req.admin) {
-            return res.status(403).json({
-              success:false,
-              message:"Sorry, Unautorized user please try again."
-            }); 
-        }
+          
             const { productId } = req.body; 
         
             
@@ -136,7 +123,9 @@ module.exports = {
     userSideFecting:async(req,res)=>{
       try {
 
+
         const dataFected=await productDb.find()
+        
           
         res.status(200).json({
             data:dataFected,
@@ -167,5 +156,47 @@ module.exports = {
           res.status(500).json({ success: false, message: "Logout failed" });
           return
       }
-  }   
+  },
+  
+  adminVerify: async (req, res) => {
+    try {
+        console.log("Cookies received:", req.cookies); // ✅ Check if cookie is received
+  
+        const token = req.cookies.admin_jwt;
+        if (!token) {
+            console.log("No token found in cookies!");
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        console.log("Decoded Token:", decoded); // ✅ Debug JWT payload
+
+        if (!decoded.role) {
+            console.log("Missing role in token:", decoded);
+            return res.status(400).json({ message: "Invalid Token Structure" });
+        }
+
+        if (decoded.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+
+        res.status(200).json({ message: "Authenticated" });
+    } catch (error) {
+        console.error("JWT Verification Error:", error.message);
+        res.status(401).json({ message: "Invalid Token" });
+    }
+},
+
+verifyAdminAuth:(req,res)=>{
+  try {
+    console.log('fuck bro');
+    
+    res.json({ message: "Authenticated", admin: req.admin });
+  } catch (error) {
+    console.error("Authentication error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+}
+
+
 };

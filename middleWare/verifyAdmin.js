@@ -1,26 +1,17 @@
-const jwt = require("jsonwebtoken"); 
-const dotenv = require("dotenv");
+const jwt = require("jsonwebtoken");
 
-dotenv.config(); // Load environment variables
+const verifyAdmin = (req, res, next) => {
+  const token = req.cookies.admin_jwt;
+  if (!token) return res.status(401).json({ message: "Unauthorized" });
 
-const verifyAdminToken = async (req, res, next) => {
-    try {
-        const token = req.cookies.admin_jwt;
-        console.log(token,"in middleware")
-        
-        if (!token) {
-            return res.status(401).json({ success:false, message: "No token found, authorization denied" });
-        }
-        
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.admin = decoded;
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) return res.status(403).json({ message: "Invalid token" });
 
-        next();
-    } catch (error) {
-        console.error("❌ Token verification failed:", error);
-        res.status(401).json({ message: "Token is not valid" });
-    }
+    req.admin = decoded;
+    console.log('next okke set ahhnu');
+     // Storing decoded admin data in req.admin
+    next();
+  });
 };
 
-// ✅ Correct CommonJS Export
-module.exports = { verifyAdminToken };
+module.exports = {verifyAdmin}

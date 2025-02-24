@@ -14,12 +14,14 @@ const PORT = process.env.PORT || 5000;
 // Connect to MongoDB
 MongoDB();
 
-app.use(cors(
-    {
-        origin: "http://localhost:5173",
-        credentials: true,
-    }
-));
+
+
+app.use(cors({
+    origin: 'http://localhost:5174', 
+    credentials: true  
+  }));
+
+
 app.use(bodyParser.json({ limit: "100mb" }));
 app.use(bodyParser.urlencoded({ limit: "100mb", extended: true })); 
 app.use(express.json()); 
