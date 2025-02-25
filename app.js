@@ -17,9 +17,9 @@ MongoDB();
 
 
 app.use(cors({
-    origin: '*', 
-    credentials: true  
-  }));
+  origin: ['http://localhost:4173', 'https://nico-door-world-frond-end.vercel.app'],
+  credentials: true  
+}));
 
 
 app.use(bodyParser.json({ limit: "100mb" }));
