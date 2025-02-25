@@ -24,9 +24,9 @@ module.exports = {
         
             // Set HTTP-Only Cookie
             res.cookie("admin_jwt", token, {
-              httpOnly: true,          // Keep this for security
-              secure: false,          // Set to false for local development (http)
-              sameSite: "lax",       // Better for local development
+              httpOnly: true,          // Prevent JavaScript access
+              secure: true,           // Required for SameSite=None and HTTPS
+              sameSite: 'None',       // Allow cross-site requests
               maxAge: 7 * 24 * 60 * 60 * 1000,  // 7 days
               path: "/"              // Keep this to allow access across your local app
             });
@@ -145,9 +145,9 @@ module.exports = {
           console.log('✅ Logging out admin...');
           
           res.clearCookie("admin_jwt", {
-              httpOnly: true,
-              secure: process.env.NODE_ENV === "production", // Secure only in production
-              sameSite: "None" // Needed for cross-origin requests
+            httpOnly: true,    
+            secure: true,     
+            sameSite: 'None',
           });
   
           return res.status(200).json({ success: true, message: 'Logged out successfully' });
@@ -189,7 +189,6 @@ module.exports = {
 
 verifyAdminAuth:(req,res)=>{
   try {
-    console.log('fuck bro');
     
     res.json({ message: "Authenticated", admin: req.admin });
   } catch (error) {
