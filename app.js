@@ -17,7 +17,7 @@ MongoDB();
 
 
 app.use(cors({
-  origin: ['http://localhost:4173', 'https://nico-door-world-frond-end.vercel.app'],
+  origin: ['http://localhost:4173', 'https://nico-door-world-frond-end.vercel.app','https://www.nicodoorworld.shop'],
   credentials: true  
 }));
 
