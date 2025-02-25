@@ -17,7 +17,7 @@ MongoDB();
 
 
 app.use(cors({
-    origin: 'http://localhost:5174', 
+    origin: '*', 
     credentials: true  
   }));
 
