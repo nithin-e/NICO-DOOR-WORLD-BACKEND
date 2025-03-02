@@ -53,6 +53,7 @@ module.exports = {
           if (!images || images.length === 0) {
             return res.status(400).json({ message: 'Images are required' });
           }
+          
       
           const newProduct = {
             name,
@@ -60,7 +61,7 @@ module.exports = {
             material,
             color,
             price,
-            lockIncluded,
+            lockIncluded: lockIncluded ? lockIncluded.toUpperCase() : "",
             stock,
             description,
             suitableFor,

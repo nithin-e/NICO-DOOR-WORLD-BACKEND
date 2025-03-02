@@ -39,7 +39,8 @@ const productSchema = new mongoose.Schema({
     },
     lockIncluded: {
         type: Boolean,
-        default: false
+        default: false,
+        set: value => value === "YES" ? true : false
     },
     suitableFor: {
         type: String,
